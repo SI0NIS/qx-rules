@@ -10,8 +10,13 @@ function parse(b) {
   try { return JSON.parse(b); } catch (e) { return null; }
 }
 
+// 0) 赚金币体系整体关闭（用户要求）：app/config、listen/report、h5/* 全部返回空数据
+//    包含 OPTIONS 预检，避免 H5 侧 CORS 报错
+if (/\/api\/advert\/earning\//.test(url)) {
+  body = EMPTY439;
+}
 // 1) 无广告时官方就返回 {"code":439,"data":{}}，直接复用该格式
-if (/\/api\/(service\/advert\/config|service\/banner\/positions|play\/advert\/info|rec\/feed)(?:\?|$)/.test(url)) {
+else if (/\/api\/(service\/advert\/config|service\/banner\/positions|play\/advert\/info|rec\/feed)(?:\?|$)/.test(url)) {
   body = EMPTY439;
 }
 // 2) 弹窗类：保留响应外壳，仅清空 data，避免 App 解析异常
