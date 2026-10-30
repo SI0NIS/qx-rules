@@ -19,11 +19,10 @@ if (/\/api\/advert\/earning\//.test(url)) {
 else if (/\/api\/(service\/advert\/config|service\/banner\/positions|play\/advert\/info|rec\/feed)(?:\?|$)/.test(url)) {
   body = EMPTY439;
 }
-// 2) 弹窗类：保留响应外壳，仅清空 data，避免 App 解析异常
+// 2) 弹窗类：必须整体返回 439，不能只清空 data 保留 200。
+//    200 + 空 data 会让 App 走「有弹窗」分支，创建空白全屏容器盖住界面（音乐照播但点不动）。
 else if (/\/api\/(popup\/(mine|scene|start)\/info|service\/v2\/openscreen\/index|pay\/vip\/invitation\/(swell|assist)\/popup|service\/version\/popup)(?:\?|$)/.test(url)) {
-  const o = parse(body);
-  if (o) { o.data = {}; body = JSON.stringify(o); }
-  else { body = EMPTY439; }
+  body = EMPTY439;
 }
 // 3) 首页模块列表：剔除 type=8「广告」模块，清空 bannerList
 else if (/\/api\/service\/home\/index(?:\?|$)/.test(url)) {
